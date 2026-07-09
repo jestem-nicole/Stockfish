@@ -617,9 +617,9 @@ void Position::update_slider_blockers(Color c) const {
     st->pinners[~c]        = 0;
 
     // Snipers are sliders that attack 's' when a piece and other snipers are removed
-    Bitboard snipers = ((attacks_bb<ROOK>(ksq) & pieces(QUEEN, ROOK))
-                        | (attacks_bb<BISHOP>(ksq) & pieces(QUEEN, BISHOP)))
-                     & pieces(~c);
+    Bitboard snipers   = ((attacks_bb<ROOK>(ksq) & pieces(QUEEN, ROOK))
+                          | (attacks_bb<BISHOP>(ksq) & pieces(QUEEN, BISHOP)))
+                       & pieces(~c);
     Bitboard occupancy = pieces() ^ snipers;
 
     while (snipers)
@@ -1646,11 +1646,11 @@ bool Position::pos_is_ok() const {
     if (Fast)
         return true;
 
-    if (pieceCount[W_KING] != 1 || pieceCount[B_KING] != 1
+    if (count<KING>(WHITE) != 1 || count<KING>(BLACK) != 1
         || attackers_to_exist(square<KING>(~sideToMove), pieces(), sideToMove))
         assert(0 && "pos_is_ok: Kings");
 
-    if ((pieces(PAWN) & (Rank1BB | Rank8BB)) || pieceCount[W_PAWN] > 8 || pieceCount[B_PAWN] > 8)
+    if ((pieces(PAWN) & (Rank1BB | Rank8BB)) || count<PAWN>(WHITE) > 8 || count<PAWN>(BLACK) > 8)
         assert(0 && "pos_is_ok: Pawns");
 
 
@@ -1691,8 +1691,8 @@ bool Position::pos_is_ok() const {
             if (!can_castle(cr))
                 continue;
 
-            if (piece_on(castlingRookSquare[cr]) != make_piece(c, ROOK)
-                || castlingRightsMask[castlingRookSquare[cr]] != cr
+            if (piece_on(castling_rook_square(cr)) != make_piece(c, ROOK)
+                || castlingRightsMask[castling_rook_square(cr)] != cr
                 || (castlingRightsMask[square<KING>(c)] & cr) != cr)
                 assert(0 && "pos_is_ok: Castling");
         }
